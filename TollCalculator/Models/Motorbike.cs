@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TollFeeCalculator.Models
+namespace TollCalculator.Models
 {
     public class Motorbike : Vehicle
     {
-        public string GetVehicleType()
+        public override string GetVehicleType()
         {
             return "Motorbike";
         }

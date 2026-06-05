@@ -1,10 +1,26 @@
 ﻿using System;
 using System.Globalization;
-using TollFeeCalculator;
-using TollFeeCalculator.Models;
+using TollCalculator.Models;
 
-public class TollCalculator
+public class TollFeeCalculator
 {
+    public List<VehicleFee> Calculate(List<TollEntry> tollEntries)
+    {
+        var result = tollEntries.GroupBy(e => e.RegNo).Select(v => 
+            new VehicleFee { RegNo = v.Key, Details = v.OrderBy(e => e.EntryTime)
+                .Select(e => new VehicleFeeDetails 
+                    { 
+                        EntryTime = e.EntryTime, 
+                        Fee = 0
+                    }
+                )
+                .ToList() 
+            }
+         ).ToList();
+
+        return result;
+    }
+
 
     /**
      * Calculate the total toll fee for one day
