@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using TollCalculator;
 using TollCalculator.Models;
+using TollCalculator.Services;
 
 namespace TollCalculator.Tests
 {
@@ -20,7 +21,7 @@ namespace TollCalculator.Tests
             };
             
             // Act
-            var results = new TollFeeCalculator().Calculate(entries);
+            var results = new TollCalculatorService().Calculate(entries);
 
             // Assert
             Assert.Equal(2, results.Count);
