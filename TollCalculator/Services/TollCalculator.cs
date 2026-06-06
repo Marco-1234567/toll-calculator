@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Globalization;
 using TollCalculator.Models;
 
@@ -25,7 +26,7 @@ namespace TollCalculator.Services
                 new VehicleFee
                 {
                     RegNo = v.Key,
-                    TotalFee = 2,
+                    TotalFee = GetVehicleFee(v.Key, v.ToList()),
                     Details = v.OrderBy(e => e.EntryTime)
                     .Select(e => new VehicleFeeDetails
                     {
@@ -38,6 +39,16 @@ namespace TollCalculator.Services
              ).ToList();
 
             return result;
+        }
+
+        private decimal GetVehicleFee(string regNo, List<TollEntry> entries)
+        {
+            var vehicle = _vehicleRegistry.GetVehicle(regNo);
+
+            if (IsVehicleTollFree(vehicle))
+                return 0;
+
+            return 1; // temp value
         }
 
         private bool IsVehicleTollFree(Vehicle vehicle)

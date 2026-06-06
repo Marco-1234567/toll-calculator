@@ -49,6 +49,7 @@ namespace TollCalculator.Tests
             // Arrange
             var entries = new List<TollEntry>
             {
+                new TollEntry("BIL123", new DateTime(2026, 6, 8, 8, 0, 0)),
                 new TollEntry("BUS888", new DateTime(2026, 6, 8, 8, 0, 1))
             };
 
@@ -56,9 +57,11 @@ namespace TollCalculator.Tests
             var results = _calculator.Calculate(entries);
 
             // Assert
-            var bussFee = results.First().TotalFee;
+            var bussFee = results.First(v => v.RegNo == "BUS888").TotalFee;
+            var carFee = results.First(v => v.RegNo == "BIL123").TotalFee;
 
             Assert.Equal(0, bussFee);
+            Assert.True(carFee > 0);
         }
     }
 }
