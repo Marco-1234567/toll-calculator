@@ -6,6 +6,13 @@ namespace TollCalculator.Services
 {
     public class TollCalculatorService
     {
+        private readonly VehicleRegistry _vehicleRegistry;
+
+        public TollCalculatorService(VehicleRegistry reg)
+        {
+            _vehicleRegistry = reg;
+        }
+
         /** 
          * Calculate total toll fee for a list of toll entries.
          * 
@@ -18,6 +25,7 @@ namespace TollCalculator.Services
                 new VehicleFee
                 {
                     RegNo = v.Key,
+                    TotalFee = 2,
                     Details = v.OrderBy(e => e.EntryTime)
                     .Select(e => new VehicleFeeDetails
                     {
@@ -32,7 +40,13 @@ namespace TollCalculator.Services
             return result;
         }
 
+        private bool IsVehicleTollFree(Vehicle vehicle)
+        {
+            return vehicle is Buss;
+        }
 
+        //################################################
+        
         /**
          * Calculate the total toll fee for one day
          *
