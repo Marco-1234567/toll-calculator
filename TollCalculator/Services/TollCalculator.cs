@@ -8,10 +8,12 @@ namespace TollCalculator.Services
     public class TollCalculatorService
     {
         private readonly VehicleRegistry _vehicleRegistry;
+        private readonly SwedishHolidayService _swedishHolidayService;
 
-        public TollCalculatorService(VehicleRegistry reg)
+        public TollCalculatorService(VehicleRegistry reg, SwedishHolidayService holidays)
         {
             _vehicleRegistry = reg;
+            _swedishHolidayService = holidays;
         }
 
         /** 

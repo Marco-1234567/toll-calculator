@@ -11,17 +11,20 @@ namespace TollCalculator.Tests
     {
         private readonly TollCalculatorService _calculator;
         private readonly VehicleRegistry _registry;
+        private readonly SwedishHolidayService _holidayService;
 
         public TollCalculatorServiceTests()
         {
             _registry = new VehicleRegistry(new List<Vehicle>
-        {
-            new Car("BIL123"),
-            new Buss("BUS888"),
-            new Car("AAA111"),
-            new Car("BBB222")
-        });
-            _calculator = new TollCalculatorService(_registry);
+            {
+                new Car("BIL123"),
+                new Buss("BUS888"),
+                new Car("AAA111"),
+                new Car("BBB222")
+            });
+
+            _holidayService = new SwedishHolidayService();
+            _calculator = new TollCalculatorService(_registry, _holidayService);
         }
 
         [Fact]
