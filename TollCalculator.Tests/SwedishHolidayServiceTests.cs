@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TollCalculator.Tests
 {
-    internal class SwedishHolidayTests
+    internal class SwedishHolidayServiceTests
     {
     }
 }

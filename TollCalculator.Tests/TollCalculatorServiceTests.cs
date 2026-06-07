@@ -63,5 +63,18 @@ namespace TollCalculator.Tests
             Assert.Equal(0, bussFee);
             Assert.True(carFee > 0);
         }
+
+        [Fact]
+        public void Calculate_EmptyList_ReturnsEmptyList()
+        {
+            // Arrange
+            var entries = new List<TollEntry>();
+
+            // Act
+            var results = _calculator.Calculate(entries);
+
+            // Assert
+            Assert.Empty(results);
+        }
     }
 }
