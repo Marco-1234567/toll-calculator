@@ -16,12 +16,12 @@ namespace TollCalculator.Services
             _swedishHolidayService = holidays;
         }
 
-        /** 
-         * Calculate total toll fee for a list of toll entries.
-         * 
-         * @param tollEntries - a list of toll entries
-         * @return - a list of vehicles with total toll fee and details
-         */
+
+        /// <summary>
+        /// Calculate total toll fee for a list of toll entries.
+        /// </summary>
+        /// <param name="tollEntries">A list of toll entries</param>
+        /// <returns>A list of vehicles with total toll fee and details</returns>
         public List<VehicleFee> Calculate(List<TollEntry> tollEntries)
         {
             var result = tollEntries.GroupBy(e => e.RegNo).Select(v =>
@@ -50,6 +50,14 @@ namespace TollCalculator.Services
             if (IsVehicleTollFree(vehicle))
                 return 0;
 
+            foreach (TollEntry te in entries)
+            {
+                if (_swedishHolidayService.IsWeekend(te.EntryTime))
+                    continue;
+
+                // calculate fee 
+            }
+     
             return 1; // temp value
         }
 

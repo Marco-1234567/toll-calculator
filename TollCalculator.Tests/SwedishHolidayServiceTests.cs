@@ -1,32 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TollCalculator.Models;
-using TollCalculator.Services;
+﻿using TollCalculator.Services;
 
 namespace TollCalculator.Tests
 {
     public class SwedishHolidayServiceTests
     {
+        private readonly SwedishHolidayService _holidayService;
 
-        private readonly TollCalculatorService _calculator;
-
-        [Fact]
-        public void Calculate_EntryOnWeekend_ReturnsZeroFee()
+        public SwedishHolidayServiceTests()
         {
-            // Arrange
-            var entries = new List<TollEntry>
-    {
-        new TollEntry("BIL123", new DateTime(2026, 6, 13, 8, 0, 0)), // Saturday
-        new TollEntry("BIL123", new DateTime(2026, 6, 14, 8, 0, 0))  // Sunday
-    };
-
-            // Act
-            var results = _calculator.Calculate(entries);
-
-            // Assert
-            Assert.Equal(0, results.First(v => v.RegNo == "BIL123").TotalFee);
+            _holidayService = new SwedishHolidayService();
         }
 
+        [Fact]
+        public void IsWeekend_Saturday_ReturnsTrue()
+        {
+            Assert.True(_holidayService.IsWeekend(new DateTime(2026, 6, 13)));
+        }
+
+        [Fact]
+        public void IsWeekend_Sunday_ReturnsTrue()
+        {
+            Assert.True(_holidayService.IsWeekend(new DateTime(2026, 6, 14)));
+        }
+
+        [Fact]
+        public void IsWeekend_Monday_ReturnsFalse()
+        {
+            Assert.False(_holidayService.IsWeekend(new DateTime(2026, 6, 15)));
+        }
     }
 }

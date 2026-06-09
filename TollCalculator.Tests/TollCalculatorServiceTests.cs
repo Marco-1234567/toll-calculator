@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TollCalculator;
-using TollCalculator.Models;
+﻿using TollCalculator.Models;
 using TollCalculator.Services;
 
 namespace TollCalculator.Tests
@@ -17,7 +13,7 @@ namespace TollCalculator.Tests
         {
             _registry = new VehicleRegistry(new List<Vehicle>
             {
-                new Car("BIL123"),
+                new Car("CAR123"),
                 new Buss("BUS888"),
                 new Car("AAA111"),
                 new Car("BBB222")
@@ -52,7 +48,7 @@ namespace TollCalculator.Tests
             // Arrange
             var entries = new List<TollEntry>
             {
-                new TollEntry("BIL123", new DateTime(2026, 6, 8, 8, 0, 0)),
+                new TollEntry("CAR123", new DateTime(2026, 6, 8, 8, 0, 0)),
                 new TollEntry("BUS888", new DateTime(2026, 6, 8, 8, 0, 1))
             };
 
@@ -61,7 +57,7 @@ namespace TollCalculator.Tests
 
             // Assert
             var bussFee = results.First(v => v.RegNo == "BUS888").TotalFee;
-            var carFee = results.First(v => v.RegNo == "BIL123").TotalFee;
+            var carFee = results.First(v => v.RegNo == "CAR123").TotalFee;
 
             Assert.Equal(0, bussFee);
             Assert.True(carFee > 0);
