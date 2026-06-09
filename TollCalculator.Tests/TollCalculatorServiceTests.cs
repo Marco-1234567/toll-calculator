@@ -75,5 +75,27 @@ namespace TollCalculator.Tests
             // Assert
             Assert.Empty(results);
         }
+
+        [Theory]
+        [InlineData(6, 0, 8)]
+        [InlineData(6, 30, 13)]
+        [InlineData(7, 0, 18)]
+        [InlineData(8, 30, 8)]
+        [InlineData(15, 30, 18)]
+        [InlineData(19, 0, 0)]
+        public void Calculate_SingleCarEntry_ReturnsCorrectFee(int hour, int minute, int expectedFee)
+        {
+            // Arrange
+            var entries = new List<TollEntry>
+    {
+        new TollEntry("CAR123", new DateTime(2026, 6, 8, hour, minute, 0)) // Monday
+    };
+
+            // Act
+            var results = _calculator.Calculate(entries);
+
+            // Assert
+            Assert.Equal(expectedFee, results.First().TotalFee);
+        }
     }
 }
