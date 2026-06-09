@@ -47,20 +47,40 @@ namespace TollCalculator.Services
         private decimal GetVehicleFee(string regNo, List<TollEntry> entries)
         {
             var vehicle = _vehicleRegistry.GetVehicle(regNo);
-            decimal fee = 0;
-            
+            decimal totalFee = 0;
+
             if (IsVehicleTollFree(vehicle))
                 return 0;
 
-            foreach (TollEntry te in entries)
-            {
-                if (_swedishHolidayService.IsWeekend(te.EntryTime))
-                    continue;
+            var chargeableEntries = entries
+                .Where(e => !_swedishHolidayService.IsWeekend(e.EntryTime))
+                .OrderBy(e => e.EntryTime)
+                .ToList();
 
-                fee += GetFeeForTime(te.EntryTime);
+            DateTime windowStart = DateTime.MinValue;
+            decimal windowMaxFee = 0;
+
+            foreach (TollEntry te in chargeableEntries)
+            {
+                decimal fee = GetFeeForTime(te.EntryTime);
+
+                if (te.EntryTime >= windowStart.AddMinutes(60))
+                {
+                    // Outside current window — add previous window fee and start new window
+                    totalFee += windowMaxFee;
+                    windowStart = te.EntryTime;
+                    windowMaxFee = fee;
+                }
+                else
+                {
+                    // Inside current window — keep track of highest fee
+                    windowMaxFee = Math.Max(windowMaxFee, fee);
+                }
             }
 
-            return Math.Min(fee, DailyFeeCap);
+            totalFee += windowMaxFee;
+
+            return Math.Min(totalFee, DailyFeeCap);
         }
 
         private bool IsVehicleTollFree(Vehicle vehicle)

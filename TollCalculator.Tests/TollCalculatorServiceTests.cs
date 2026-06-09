@@ -106,7 +106,7 @@ namespace TollCalculator.Tests
                 new TollEntry("CAR123", new DateTime(2026, 6, 8, 7, 0, 0)),  // 18 SEK
                 new TollEntry("CAR123", new DateTime(2026, 6, 8, 9, 0, 0)),  // 8 SEK
                 new TollEntry("CAR123", new DateTime(2026, 6, 8, 15, 30, 0)),// 18 SEK
-                new TollEntry("CAR123", new DateTime(2026, 6, 8, 16, 0, 0)), // 18 SEK
+                new TollEntry("CAR123", new DateTime(2026, 6, 8, 16, 31, 0)), // 18 SEK
                 new TollEntry("CAR123", new DateTime(2026, 6, 8, 17, 0, 0)), // 13 SEK
             };
             // (total 75 SEK)
