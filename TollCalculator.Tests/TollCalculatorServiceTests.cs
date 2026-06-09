@@ -123,10 +123,10 @@ namespace TollCalculator.Tests
         {
             // Arrange
             var entries = new List<TollEntry>
-    {
-        new TollEntry("CAR123", new DateTime(2026, 6, 8, 7, 0, 0)),  // 18 SEK
-        new TollEntry("CAR123", new DateTime(2026, 6, 8, 7, 30, 0)), // 13 SEK
-    };
+            {
+                new TollEntry("CAR123", new DateTime(2026, 6, 8, 7, 0, 0)),  // 18 SEK
+                new TollEntry("CAR123", new DateTime(2026, 6, 8, 7, 30, 0)), // 13 SEK
+            };
             // Should return 18, not 31
 
             // Act
@@ -134,6 +134,22 @@ namespace TollCalculator.Tests
 
             // Assert
             Assert.Equal(18, results.First().TotalFee);
+        }
+
+        [Fact]
+        public void Calculate_SingleCarEntry_DetailsFeeMatchesTotalFee()
+        {
+            // Arrange
+            var entries = new List<TollEntry>
+            {
+                new TollEntry("CAR123", new DateTime(2026, 6, 8, 7, 0, 0)) // 18 SEK
+            };
+
+            // Act
+            var results = _calculator.Calculate(entries);
+
+            // Assert
+            Assert.Equal(18, results.First().Details.First().Fee);
         }
     }
 }
