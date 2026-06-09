@@ -53,10 +53,10 @@ namespace TollCalculator.Services
                 if (_swedishHolidayService.IsWeekend(te.EntryTime))
                     continue;
 
-                fee = fee + GetFeeForTime(te.EntryTime);
+                fee += GetFeeForTime(te.EntryTime);
             }
 
-            return fee;
+            return Math.Min(fee, 60);
         }
 
         private bool IsVehicleTollFree(Vehicle vehicle)
