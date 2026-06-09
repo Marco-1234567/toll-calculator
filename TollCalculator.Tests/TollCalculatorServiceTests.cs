@@ -87,15 +87,35 @@ namespace TollCalculator.Tests
         {
             // Arrange
             var entries = new List<TollEntry>
-    {
-        new TollEntry("CAR123", new DateTime(2026, 6, 8, hour, minute, 0)) // Monday
-    };
+            {
+                new TollEntry("CAR123", new DateTime(2026, 6, 8, hour, minute, 0)) // Monday
+            };
 
             // Act
             var results = _calculator.Calculate(entries);
 
             // Assert
             Assert.Equal(expectedFee, results.First().TotalFee);
+        }
+
+        [Fact]
+        public void Calculate_FeesExceedDailyCap_Returns60()
+        {
+            var entries = new List<TollEntry>
+    {
+        new TollEntry("CAR123", new DateTime(2026, 6, 8, 7, 0, 0)),  // 18 SEK
+        new TollEntry("CAR123", new DateTime(2026, 6, 8, 9, 0, 0)),  // 8 SEK
+        new TollEntry("CAR123", new DateTime(2026, 6, 8, 15, 30, 0)),// 18 SEK
+        new TollEntry("CAR123", new DateTime(2026, 6, 8, 16, 0, 0)), // 18 SEK
+        new TollEntry("CAR123", new DateTime(2026, 6, 8, 17, 0, 0)), // 13 SEK
+    };
+            // (total 75 SEK)
+
+            // Act
+            var results = _calculator.Calculate(entries);
+
+            // Assert
+            Assert.Equal(60, results.First().TotalFee);
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Globalization;
-using TollCalculator.Models;
+﻿using TollCalculator.Models;
 
 namespace TollCalculator.Services
 {
@@ -46,7 +43,8 @@ namespace TollCalculator.Services
         private decimal GetVehicleFee(string regNo, List<TollEntry> entries)
         {
             var vehicle = _vehicleRegistry.GetVehicle(regNo);
-
+            decimal fee = 0;
+            
             if (IsVehicleTollFree(vehicle))
                 return 0;
 
@@ -55,10 +53,10 @@ namespace TollCalculator.Services
                 if (_swedishHolidayService.IsWeekend(te.EntryTime))
                     continue;
 
-                // calculate fee 
+                fee = fee + GetFeeForTime(te.EntryTime);
             }
-     
-            return 1; // temp value
+
+            return fee;
         }
 
         private bool IsVehicleTollFree(Vehicle vehicle)
@@ -66,8 +64,32 @@ namespace TollCalculator.Services
             return vehicle is Buss;
         }
 
+        private static readonly (TimeSpan From, TimeSpan To, int Fee)[] FeeSchedule =
+        {
+            (new TimeSpan(6, 0, 0),  new TimeSpan(6, 29, 0),  8),
+            (new TimeSpan(6, 30, 0), new TimeSpan(6, 59, 0),  13),
+            (new TimeSpan(7, 0, 0),  new TimeSpan(7, 59, 0),  18),
+            (new TimeSpan(8, 0, 0),  new TimeSpan(8, 29, 0),  13),
+            (new TimeSpan(8, 30, 0), new TimeSpan(14, 59, 0), 8),
+            (new TimeSpan(15, 0, 0), new TimeSpan(15, 29, 0), 13),
+            (new TimeSpan(15, 30, 0),new TimeSpan(16, 59, 0), 18),
+            (new TimeSpan(17, 0, 0), new TimeSpan(17, 59, 0), 13),
+            (new TimeSpan(18, 0, 0), new TimeSpan(18, 29, 0), 8),
+        };
+
+        private int GetFeeForTime(DateTime date)
+        {
+            var time = date.TimeOfDay;
+            foreach (var (from, to, fee) in FeeSchedule)
+            {
+                if (time >= from && time <= to)
+                    return fee;
+            }
+            return 0;
+        }
+
         //################################################
-        
+
         /**
          * Calculate the total toll fee for one day
          *
