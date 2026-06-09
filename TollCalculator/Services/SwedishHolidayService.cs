@@ -22,7 +22,6 @@ namespace TollCalculator.Services
                 new DateTime(year, 1, 6),           // Trettondedag jul
                 new DateTime(year, 5, 1),           // Första maj
                 new DateTime(year, 6, 6),           // Nationaldagen
-                new DateTime(year, 12, 24),         // Julafton
                 new DateTime(year, 12, 25),         // Juldagen
                 new DateTime(year, 12, 26),         // Annandag jul
                 new DateTime(year, 12, 31),         // Nyårsafton

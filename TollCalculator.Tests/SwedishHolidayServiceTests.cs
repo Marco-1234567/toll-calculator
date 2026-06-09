@@ -34,7 +34,6 @@ namespace TollCalculator.Tests
         [InlineData(1, 6)]   // Trettondedag jul
         [InlineData(5, 1)]   // Första maj
         [InlineData(6, 6)]   // Nationaldagen
-        [InlineData(12, 24)] // Julafton
         [InlineData(12, 25)] // Juldagen
         [InlineData(12, 26)] // Annandag jul
         [InlineData(12, 31)] // Nyårsafton
