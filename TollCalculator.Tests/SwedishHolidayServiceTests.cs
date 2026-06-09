@@ -49,5 +49,20 @@ namespace TollCalculator.Tests
             // Assert
             Assert.True(result);
         }
+
+        [Theory]
+        [InlineData(2026, 6, 19)] // Already a Friday
+        [InlineData(2027, 6, 25)] // First Friday after June 19
+        public void GetMidsummerEve_ReturnsCorrectDate(int year, int month, int day)
+        {
+            // Arrange
+            var expected = new DateTime(year, month, day);
+
+            // Act
+            var result = _holidayService.GetMidsummerEve(year);
+
+            // Assert
+            Assert.Equal(expected, result);
+        }
     }
 }

@@ -32,5 +32,10 @@ namespace TollCalculator.Services
             return date.DayOfWeek == DayOfWeek.Saturday
                 || date.DayOfWeek == DayOfWeek.Sunday;
         }
+
+        public DateTime GetMidsummerEve(int year)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
