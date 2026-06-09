@@ -8,7 +8,23 @@ namespace TollCalculator.Services
     {
         public bool IsPublicHoliday(DateTime date)
         {
-            throw new NotImplementedException();
+            var fixedHolidays = GetFixedHolidays(date.Year);
+            return fixedHolidays.Contains(date.Date);
+        }
+
+        private HashSet<DateTime> GetFixedHolidays(int year)
+        {
+            return new HashSet<DateTime>
+    {
+        new DateTime(year, 1, 1),   // Nyårsdagen
+        new DateTime(year, 1, 6),   // Trettondedag jul
+        new DateTime(year, 5, 1),   // Första maj
+        new DateTime(year, 6, 6),   // Nationaldagen
+        new DateTime(year, 12, 24), // Julafton
+        new DateTime(year, 12, 25), // Juldagen
+        new DateTime(year, 12, 26), // Annandag jul
+        new DateTime(year, 12, 31), // Nyårsafton
+    };
         }
 
         public bool IsWeekend(DateTime date)
