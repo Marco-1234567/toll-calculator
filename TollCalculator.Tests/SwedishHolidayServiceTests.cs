@@ -28,5 +28,26 @@ namespace TollCalculator.Tests
         {
             Assert.False(_holidayService.IsWeekend(new DateTime(2026, 6, 15)));
         }
+
+        [Theory]
+        [InlineData(1, 1)]   // Nyårsdagen
+        [InlineData(1, 6)]   // Trettondedag jul
+        [InlineData(5, 1)]   // Första maj
+        [InlineData(6, 6)]   // Nationaldagen
+        [InlineData(12, 24)] // Julafton
+        [InlineData(12, 25)] // Juldagen
+        [InlineData(12, 26)] // Annandag jul
+        [InlineData(12, 31)] // Nyårsafton
+        public void IsPublicHoliday_FixedHoliday_ReturnsTrue(int month, int day)
+        {
+            // Arrange
+            var date = new DateTime(2026, month, day);
+
+            // Act
+            var result = _holidayService.IsPublicHoliday(date);
+
+            // Assert
+            Assert.True(result);
+        }
     }
 }
