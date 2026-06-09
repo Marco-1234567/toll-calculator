@@ -81,6 +81,8 @@ namespace TollCalculator.Tests
         }
 
         [Theory]
+        [InlineData(2024, 3, 31)] // Easter Sunday 2024
+        [InlineData(2025, 4, 20)] // Easter Sunday 2025
         [InlineData(2026, 4, 5)]  // Easter Sunday 2026
         [InlineData(2027, 3, 28)] // Easter Sunday 2027
         public void GetEaster_ReturnsCorrectDate(int year, int month, int day)

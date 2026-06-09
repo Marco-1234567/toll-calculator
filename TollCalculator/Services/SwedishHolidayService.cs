@@ -14,19 +14,26 @@ namespace TollCalculator.Services
 
         private HashSet<DateTime> GetHolidays(int year)
         {
+            var easter = GetEaster(year);
+
             return new HashSet<DateTime>
             {
-                new DateTime(year, 1, 1),   // Nyårsdagen
-                new DateTime(year, 1, 6),   // Trettondedag jul
-                new DateTime(year, 5, 1),   // Första maj
-                new DateTime(year, 6, 6),   // Nationaldagen
-                new DateTime(year, 12, 24), // Julafton
-                new DateTime(year, 12, 25), // Juldagen
-                new DateTime(year, 12, 26), // Annandag jul
-                new DateTime(year, 12, 31), // Nyårsafton
+                new DateTime(year, 1, 1),           // Nyårsdagen
+                new DateTime(year, 1, 6),           // Trettondedag jul
+                new DateTime(year, 5, 1),           // Första maj
+                new DateTime(year, 6, 6),           // Nationaldagen
+                new DateTime(year, 12, 24),         // Julafton
+                new DateTime(year, 12, 25),         // Juldagen
+                new DateTime(year, 12, 26),         // Annandag jul
+                new DateTime(year, 12, 31),         // Nyårsafton
                 GetMidsummerEve(year),              // Midsommarafton
                 GetMidsummerEve(year).AddDays(1),   // Midsommardagen
                 GetAllSaints(year),                 // Alla helgons dag
+                easter.AddDays(-2),                 // Långfredag
+                easter,                             // Påskdagen
+                easter.AddDays(1),                  // Annandag påsk
+                easter.AddDays(39),                 // Kristi himmelsfärd
+                easter.AddDays(49),                 // Pingstdagen
             };
         }
 
@@ -56,7 +63,21 @@ namespace TollCalculator.Services
 
         public DateTime GetEaster(int year)
         {
-            throw new NotImplementedException();
+            int a = year % 19;
+            int b = year / 100;
+            int c = year % 100;
+            int d = b / 4;
+            int e = b % 4;
+            int f = (b + 8) / 25;
+            int g = (b - f + 1) / 3;
+            int h = (19 * a + b - d - g + 15) % 30;
+            int i = c / 4;
+            int k = c % 4;
+            int l = (32 + 2 * e + 2 * i - h - k) % 7;
+            int m = (a + 11 * h + 22 * l) / 451;
+            int month = (h + l - 7 * m + 114) / 31;
+            int day = ((h + l - 7 * m + 114) % 31) + 1;
+            return new DateTime(year, month, day);
         }
     }
 }
