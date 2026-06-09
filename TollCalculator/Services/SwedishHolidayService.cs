@@ -43,5 +43,10 @@ namespace TollCalculator.Services
                 date = date.AddDays(1);
             return date;
         }
+
+        public DateTime GetAllSaints(int year)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

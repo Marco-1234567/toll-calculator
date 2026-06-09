@@ -64,5 +64,20 @@ namespace TollCalculator.Tests
             // Assert
             Assert.Equal(expected, result);
         }
+
+        [Theory]
+        [InlineData(2026, 10, 31)] // Already a Saturday
+        [InlineData(2027, 11, 6)]  // First Saturday after October 31
+        public void GetAllSaints_ReturnsCorrectDate(int year, int month, int day)
+        {
+            // Arrange
+            var expected = new DateTime(year, month, day);
+
+            // Act
+            var result = _holidayService.GetAllSaints(year);
+
+            // Assert
+            Assert.Equal(expected, result);
+        }
     }
 }
