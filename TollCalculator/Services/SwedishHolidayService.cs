@@ -15,18 +15,19 @@ namespace TollCalculator.Services
         private HashSet<DateTime> GetHolidays(int year)
         {
             return new HashSet<DateTime>
-    {
-        new DateTime(year, 1, 1),   // Nyårsdagen
-        new DateTime(year, 1, 6),   // Trettondedag jul
-        new DateTime(year, 5, 1),   // Första maj
-        new DateTime(year, 6, 6),   // Nationaldagen
-        new DateTime(year, 12, 24), // Julafton
-        new DateTime(year, 12, 25), // Juldagen
-        new DateTime(year, 12, 26), // Annandag jul
-        new DateTime(year, 12, 31), // Nyårsafton
-        GetMidsummerEve(year),              // Midsommarafton
-        GetMidsummerEve(year).AddDays(1),   // Midsommardagen
-    };
+            {
+                new DateTime(year, 1, 1),   // Nyårsdagen
+                new DateTime(year, 1, 6),   // Trettondedag jul
+                new DateTime(year, 5, 1),   // Första maj
+                new DateTime(year, 6, 6),   // Nationaldagen
+                new DateTime(year, 12, 24), // Julafton
+                new DateTime(year, 12, 25), // Juldagen
+                new DateTime(year, 12, 26), // Annandag jul
+                new DateTime(year, 12, 31), // Nyårsafton
+                GetMidsummerEve(year),              // Midsommarafton
+                GetMidsummerEve(year).AddDays(1),   // Midsommardagen
+                GetAllSaints(year),                 // Alla helgons dag
+            };
         }
 
         public bool IsWeekend(DateTime date)
@@ -46,7 +47,11 @@ namespace TollCalculator.Services
 
         public DateTime GetAllSaints(int year)
         {
-            throw new NotImplementedException();
+            // First Saturday on or after October 31
+            var date = new DateTime(year, 10, 31);
+            while (date.DayOfWeek != DayOfWeek.Saturday)
+                date = date.AddDays(1);
+            return date;
         }
     }
 }
