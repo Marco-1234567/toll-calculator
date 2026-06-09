@@ -79,5 +79,20 @@ namespace TollCalculator.Tests
             // Assert
             Assert.Equal(expected, result);
         }
+
+        [Theory]
+        [InlineData(2026, 4, 5)]  // Easter Sunday 2026
+        [InlineData(2027, 3, 28)] // Easter Sunday 2027
+        public void GetEaster_ReturnsCorrectDate(int year, int month, int day)
+        {
+            // Arrange
+            var expected = new DateTime(year, month, day);
+
+            // Act
+            var result = _holidayService.GetEaster(year);
+
+            // Assert
+            Assert.Equal(expected, result);
+        }
     }
 }
