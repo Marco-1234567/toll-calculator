@@ -24,6 +24,8 @@ namespace TollCalculator.Services
         new DateTime(year, 12, 25), // Juldagen
         new DateTime(year, 12, 26), // Annandag jul
         new DateTime(year, 12, 31), // Nyårsafton
+        GetMidsummerEve(year),              // Midsommarafton
+        GetMidsummerEve(year).AddDays(1),   // Midsommardagen
     };
         }
 
@@ -35,7 +37,11 @@ namespace TollCalculator.Services
 
         public DateTime GetMidsummerEve(int year)
         {
-            throw new NotImplementedException();
+            // First Friday on or after June 19
+            var date = new DateTime(year, 6, 19);
+            while (date.DayOfWeek != DayOfWeek.Friday)
+                date = date.AddDays(1);
+            return date;
         }
     }
 }
