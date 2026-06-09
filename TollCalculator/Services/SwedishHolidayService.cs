@@ -8,11 +8,11 @@ namespace TollCalculator.Services
     {
         public bool IsPublicHoliday(DateTime date)
         {
-            var fixedHolidays = GetFixedHolidays(date.Year);
+            var fixedHolidays = GetHolidays(date.Year);
             return fixedHolidays.Contains(date.Date);
         }
 
-        private HashSet<DateTime> GetFixedHolidays(int year)
+        private HashSet<DateTime> GetHolidays(int year)
         {
             return new HashSet<DateTime>
     {
