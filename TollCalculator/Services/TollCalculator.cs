@@ -4,6 +4,10 @@ namespace TollCalculator.Services
 {
     public class TollCalculatorService
     {
+        private const decimal DailyFeeCap = 60;
+        private const decimal MinFee = 8;
+        private const decimal MaxFee = 18;
+
         private readonly VehicleRegistry _vehicleRegistry;
         private readonly SwedishHolidayService _swedishHolidayService;
 
@@ -56,7 +60,7 @@ namespace TollCalculator.Services
                 fee += GetFeeForTime(te.EntryTime);
             }
 
-            return Math.Min(fee, 60);
+            return Math.Min(fee, DailyFeeCap);
         }
 
         private bool IsVehicleTollFree(Vehicle vehicle)
@@ -64,20 +68,20 @@ namespace TollCalculator.Services
             return vehicle is Buss;
         }
 
-        private static readonly (TimeSpan From, TimeSpan To, int Fee)[] FeeSchedule =
+        private static readonly (TimeSpan From, TimeSpan To, decimal Fee)[] FeeSchedule =
         {
-            (new TimeSpan(6, 0, 0),  new TimeSpan(6, 29, 0),  8),
+            (new TimeSpan(6, 0, 0),  new TimeSpan(6, 29, 0),  MinFee),
             (new TimeSpan(6, 30, 0), new TimeSpan(6, 59, 0),  13),
-            (new TimeSpan(7, 0, 0),  new TimeSpan(7, 59, 0),  18),
+            (new TimeSpan(7, 0, 0),  new TimeSpan(7, 59, 0),  MaxFee),
             (new TimeSpan(8, 0, 0),  new TimeSpan(8, 29, 0),  13),
-            (new TimeSpan(8, 30, 0), new TimeSpan(14, 59, 0), 8),
+            (new TimeSpan(8, 30, 0), new TimeSpan(14, 59, 0), MinFee),
             (new TimeSpan(15, 0, 0), new TimeSpan(15, 29, 0), 13),
-            (new TimeSpan(15, 30, 0),new TimeSpan(16, 59, 0), 18),
+            (new TimeSpan(15, 30, 0),new TimeSpan(16, 59, 0), MaxFee),
             (new TimeSpan(17, 0, 0), new TimeSpan(17, 59, 0), 13),
-            (new TimeSpan(18, 0, 0), new TimeSpan(18, 29, 0), 8),
+            (new TimeSpan(18, 0, 0), new TimeSpan(18, 29, 0), MinFee),
         };
 
-        private int GetFeeForTime(DateTime date)
+        private decimal GetFeeForTime(DateTime date)
         {
             var time = date.TimeOfDay;
             foreach (var (from, to, fee) in FeeSchedule)
