@@ -43,6 +43,7 @@ Swedish congestion tax rules.
   — easy to maintain and extend
 - `VehicleRegistry` acts as a vehicle lookup — mirrors real world
   where toll sensors only register a license plate
+- Unknown vehicles are charged full toll fee, and a warning is written to Console.Error. The caller can separately invoke GetUnknownVehicles() to retrieve a list of unregistered vehicles for further investigation.
 
 ## Fee Schedule
 
