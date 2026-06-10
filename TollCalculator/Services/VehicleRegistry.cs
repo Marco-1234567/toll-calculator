@@ -8,6 +8,8 @@ namespace TollCalculator.Services
 
         public VehicleRegistry(IEnumerable<Vehicle> vehicles)
         {
+            ArgumentNullException.ThrowIfNull(vehicles);
+
             _vehicles = new Dictionary<string, Vehicle>();
             foreach (var vehicle in vehicles)
             {
