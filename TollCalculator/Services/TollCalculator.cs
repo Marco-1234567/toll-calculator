@@ -60,6 +60,9 @@ namespace TollCalculator.Services
             var vehicle = _vehicleRegistry.GetVehicle(regNo);
             decimal totalFee = 0;
 
+            if (vehicle == null)
+                return 0;
+
             if (IsVehicleTollFree(vehicle))
                 return 0;
 
@@ -120,6 +123,13 @@ namespace TollCalculator.Services
         {
             var vehicle = _vehicleRegistry.GetVehicle(regNo);
 
+            if (vehicle == null)
+                return entries.Select(e => new VehicleFeeDetails
+                {
+                    EntryTime = e.EntryTime,
+                    Fee = 0
+                }).ToList();
+
             return entries.Select(e => new VehicleFeeDetails
             {
                 EntryTime = e.EntryTime,
@@ -129,9 +139,13 @@ namespace TollCalculator.Services
             }).ToList();
         }
 
-        public List<string> GetUnknownVehicles(List<TollEntry> entries)
+        public List<string> GetUnknownVehicles(List<TollEntry> tollEntries)
         {
-            throw new NotImplementedException();
+            return tollEntries
+                .Select(e => e.RegNo)
+                .Distinct()
+                .Where(regNo => _vehicleRegistry.GetVehicle(regNo) == null)
+                .ToList();
         }
     }
 }
