@@ -264,13 +264,15 @@ namespace TollCalculator.Tests
         new TollEntry("CAR123", new DateTime(2026, 6, 9, 16, 0, 0)),  // 18 SEK
         new TollEntry("CAR123", new DateTime(2026, 6, 9, 17, 0, 0)),  // 13 SEK
     };
-            // Each day = 67 SEK → capped at 60 SEK per day → total should be 120 SEK
+            // Monday: 18 + 18 + 13 = 49 SEK
+            // Tuesday: 18 + 18 + 13 = 49 SEK
+            // Total = 98 SEK (under daily cap both days)
 
             // Act
             var results = _calculator.Calculate(entries);
 
             // Assert
-            Assert.Equal(120, results.First().TotalFee);
+            Assert.Equal(98, results.First().TotalFee);
         }
     }
 }

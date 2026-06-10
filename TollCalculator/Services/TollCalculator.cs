@@ -71,40 +71,43 @@ namespace TollCalculator.Services
         private decimal GetVehicleFee(string regNo, List<TollEntry> entries)
         {
             var vehicle = _vehicleRegistry.GetVehicle(regNo);
-            decimal totalFee = 0;
 
             if (vehicle != null && IsVehicleTollFree(vehicle))
                 return 0;
 
-            var chargeableEntries = entries
-                .Where(e => !IsTollFreeDate(e.EntryTime))
-                .OrderBy(e => e.EntryTime)
-                .ToList();
+            return entries
+                .GroupBy(e => e.EntryTime.Date)
+                .Sum(dayEntries => GetDailyFee(dayEntries.ToList()));
+        }
 
+        private decimal GetDailyFee(List<TollEntry> entries)
+        {
+            decimal fee = 0;
             DateTime windowStart = DateTime.MinValue;
             decimal windowMaxFee = 0;
 
-            foreach (TollEntry te in chargeableEntries)
+            foreach (TollEntry te in entries.OrderBy(e => e.EntryTime))
             {
-                decimal fee = GetFeeForTime(te.EntryTime);
+                if (IsTollFreeDate(te.EntryTime))
+                    continue;
+
+                decimal entryFee = GetFeeForTime(te.EntryTime);
 
                 if (te.EntryTime >= windowStart.AddMinutes(60))
                 {
-                    // Outside current window — add previous window fee and start new window
-                    totalFee += windowMaxFee;
+                    fee += windowMaxFee;
                     windowStart = te.EntryTime;
-                    windowMaxFee = fee;
+                    windowMaxFee = entryFee;
                 }
                 else
                 {
-                    // Inside current window — keep track of highest fee
-                    windowMaxFee = Math.Max(windowMaxFee, fee);
+                    windowMaxFee = Math.Max(windowMaxFee, entryFee);
                 }
             }
 
-            totalFee += windowMaxFee;
+            fee += windowMaxFee;
 
-            return Math.Min(totalFee, DailyFeeCap);
+            return Math.Min(fee, DailyFeeCap);
         }
 
         private bool IsVehicleTollFree(Vehicle vehicle)
