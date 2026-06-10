@@ -185,5 +185,25 @@ namespace TollCalculator.Tests
             Assert.Single(unknowns);
             Assert.Contains("UNKNOWN", unknowns);
         }
+
+        [Fact]
+        public void Calculate_UnregisteredVehicle_ChargesFullFeeAndFlaggedAsUnknown()
+        {
+            // Arrange
+            var entries = new List<TollEntry>
+    {
+        new TollEntry("UNKNOWN", new DateTime(2026, 6, 8, 7, 0, 0)), // rush hour
+        new TollEntry("CAR123", new DateTime(2026, 6, 8, 7, 0, 0))   // known
+    };
+
+            // Act
+            var results = _calculator.Calculate(entries);
+
+            // Assert
+            var unknown = results.First(v => v.RegNo == "UNKNOWN");
+            Assert.True(unknown.IsUnknown);
+            Assert.Equal(18, unknown.TotalFee);  // charged rush hour fee
+            Assert.False(results.First(v => v.RegNo == "CAR123").IsUnknown);
+        }
     }
 }
