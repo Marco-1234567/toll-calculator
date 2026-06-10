@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TollCalculator.Models;
+﻿using TollCalculator.Models;
 
 namespace TollCalculator.Services
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TollCalculator.Tests
+﻿namespace TollCalculator.Tests
 {
     internal class VehicleRegistryTests
     {
