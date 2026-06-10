@@ -246,5 +246,31 @@ namespace TollCalculator.Tests
             // Assert
             Assert.Equal(expectedFee, results.First().TotalFee);
         }
+
+        [Fact]
+        public void Calculate_EntriesSpanningMidnight_AppliesDailyCapPerDay()
+        {
+            // Arrange
+            var entries = new List<TollEntry>
+    {
+        // Monday — many rush hour entries
+        new TollEntry("CAR123", new DateTime(2026, 6, 8, 7, 0, 0)),   // 18 SEK
+        new TollEntry("CAR123", new DateTime(2026, 6, 8, 15, 30, 0)), // 18 SEK
+        new TollEntry("CAR123", new DateTime(2026, 6, 8, 16, 0, 0)),  // 18 SEK
+        new TollEntry("CAR123", new DateTime(2026, 6, 8, 17, 0, 0)),  // 13 SEK
+        // Tuesday
+        new TollEntry("CAR123", new DateTime(2026, 6, 9, 7, 0, 0)),   // 18 SEK
+        new TollEntry("CAR123", new DateTime(2026, 6, 9, 15, 30, 0)), // 18 SEK
+        new TollEntry("CAR123", new DateTime(2026, 6, 9, 16, 0, 0)),  // 18 SEK
+        new TollEntry("CAR123", new DateTime(2026, 6, 9, 17, 0, 0)),  // 13 SEK
+    };
+            // Each day = 67 SEK → capped at 60 SEK per day → total should be 120 SEK
+
+            // Act
+            var results = _calculator.Calculate(entries);
+
+            // Assert
+            Assert.Equal(120, results.First().TotalFee);
+        }
     }
 }
