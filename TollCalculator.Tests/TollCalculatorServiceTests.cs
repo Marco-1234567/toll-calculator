@@ -151,5 +151,21 @@ namespace TollCalculator.Tests
             // Assert
             Assert.Equal(18, results.First().Details.First().Fee);
         }
+
+        [Fact]
+        public void Calculate_CarEntryAtNight_ReturnsZeroFee()
+        {
+            // Arrange
+            var entries = new List<TollEntry>
+            {
+                new TollEntry("CAR123", new DateTime(2026, 6, 8, 3, 0, 0)) // 03:00 night
+            };
+
+            // Act
+            var results = _calculator.Calculate(entries);
+
+            // Assert
+            Assert.Equal(0, results.First().TotalFee);
+        }
     }
 }
