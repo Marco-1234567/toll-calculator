@@ -2,6 +2,9 @@
 
 namespace TollCalculator.Services
 {
+    /// <summary>
+    /// Service responsible for calculating toll fees based on Swedish congestion tax rules.
+    /// </summary>
     public class TollCalculatorService
     {
         private const decimal DailyFeeCap = 60;
@@ -11,18 +14,29 @@ namespace TollCalculator.Services
         private readonly VehicleRegistry _vehicleRegistry;
         private readonly SwedishHolidayService _swedishHolidayService;
 
-        public TollCalculatorService(VehicleRegistry reg, SwedishHolidayService holidays)
+        /// <summary>
+        /// Initializes the toll calculator with required dependencies.
+        /// </summary>
+        /// <param name="vehicleRegistry">Registry of known vehicles used to look up vehicle types by registration number</param>
+        /// <param name="holidayService">Service for determining Swedish public holidays and weekends</param>
+        /// <exception cref="ArgumentNullException">Thrown when reg or holidays is null</exception>
+        public TollCalculatorService(VehicleRegistry vehicleRegistry, SwedishHolidayService holidayService)
         {
-            _vehicleRegistry = reg;
-            _swedishHolidayService = holidays;
+            ArgumentNullException.ThrowIfNull(vehicleRegistry);
+            ArgumentNullException.ThrowIfNull(holidayService);
+
+            _vehicleRegistry = vehicleRegistry;
+            _swedishHolidayService = holidayService;
         }
 
-
         /// <summary>
-        /// Calculate total toll fee for a list of toll entries.
+        /// Calculates total toll fees for a list of toll entries grouped by registration number.
+        /// Unknown vehicles are charged full fee and flagged with IsUnknown = true.
+        /// A warning is written to Console.Error for each unknown vehicle.
         /// </summary>
-        /// <param name="tollEntries">A list of toll entries</param>
-        /// <returns>A list of vehicles with total toll fee and details</returns>
+        /// <param name="tollEntries">List of toll entries to calculate fees for</param>
+        /// <returns>List of vehicle fees grouped by registration number</returns>
+        /// <exception cref="ArgumentNullException">Thrown when tollEntries is null</exception>
         public List<VehicleFee> Calculate(List<TollEntry> tollEntries)
         {
             ArgumentNullException.ThrowIfNull(tollEntries);
@@ -50,6 +64,10 @@ namespace TollCalculator.Services
             return result;
         }
 
+        /// <summary>
+        /// Returns the toll fee schedule as a read only list.
+        /// </summary>
+        /// <returns>Read only list of fee intervals with from, to and fee</returns>
         public static IReadOnlyList<(TimeSpan From, TimeSpan To, decimal Fee)> GetFeeSchedule()
         {
             return FeeSchedule;
@@ -145,6 +163,11 @@ namespace TollCalculator.Services
             }).ToList();
         }
 
+        /// <summary>
+        /// Returns a list of registration numbers not found in the vehicle registry.
+        /// </summary>
+        /// <param name="tollEntries">List of toll entries to check</param>
+        /// <returns>List of unknown registration numbers</returns>
         public List<string> GetUnknownVehicles(List<TollEntry> tollEntries)
         {
             return tollEntries

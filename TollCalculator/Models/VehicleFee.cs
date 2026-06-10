@@ -1,5 +1,8 @@
 ﻿namespace TollCalculator.Models
 {
+    /// <summary>
+    /// Represents the calculated toll fee for a vehicle.
+    /// </summary>
     public class VehicleFee
     {
         public string RegNo { get; set; }

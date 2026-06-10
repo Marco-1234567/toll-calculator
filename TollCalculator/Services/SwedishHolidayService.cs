@@ -1,7 +1,16 @@
 ﻿namespace TollCalculator.Services
 {
+    /// <summary>
+    /// Service for determining Swedish public holidays and weekends.
+    /// Contains no toll specific logic — purely a calendar utility.
+    /// </summary>
     public class SwedishHolidayService
     {
+        /// <summary>
+        /// Determines whether the given date is a Swedish public holiday.
+        /// </summary>
+        /// <param name="date">Date to check</param>
+        /// <returns>True if the date is a public holiday</returns>
         public bool IsPublicHoliday(DateTime date)
         {
             var holidays = GetHolidays(date.Year);
@@ -32,6 +41,11 @@
             };
         }
 
+        /// <summary>
+        /// Determines whether the given date falls on a weekend.
+        /// </summary>
+        /// <param name="date">Date to check</param>
+        /// <returns>True if the date is a Saturday or Sunday</returns>
         public bool IsWeekend(DateTime date)
         {
             return date.DayOfWeek == DayOfWeek.Saturday
