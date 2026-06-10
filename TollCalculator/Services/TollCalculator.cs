@@ -25,7 +25,10 @@ namespace TollCalculator.Services
         /// <returns>A list of vehicles with total toll fee and details</returns>
         public List<VehicleFee> Calculate(List<TollEntry> tollEntries)
         {
+            ArgumentNullException.ThrowIfNull(tollEntries);
+
             var unknowns = GetUnknownVehicles(tollEntries);
+            
             foreach (var regNo in unknowns)
                 Console.Error.WriteLine($"WARNING: Vehicle {regNo} not found in registry");
 
