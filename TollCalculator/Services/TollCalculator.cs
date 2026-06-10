@@ -30,14 +30,15 @@ namespace TollCalculator.Services
                 {
                     RegNo = v.Key,
                     TotalFee = GetVehicleFee(v.Key, v.ToList()),
-                    Details = v.OrderBy(e => e.EntryTime)
-                    .Select(e => new VehicleFeeDetails
-                    {
-                        EntryTime = e.EntryTime,
-                        Fee = 0
-                    }
-                    )
-                    .ToList()
+                    Details = GetDetails(v.Key, v.OrderBy(e => e.EntryTime).ToList())
+                    //Details = v.OrderBy(e => e.EntryTime)
+                    //.Select(e => new VehicleFeeDetails
+                    //{
+                    //    EntryTime = e.EntryTime,
+                    //    Fee = 0
+                    //}
+                    //)
+                    //.ToList()
                 }
              ).ToList();
 
@@ -118,6 +119,19 @@ namespace TollCalculator.Services
                 || _swedishHolidayService.IsPublicHoliday(date);
         }
 
+        private List<VehicleFeeDetails> GetDetails(string regNo, List<TollEntry> entries)
+        {
+            var vehicle = _vehicleRegistry.GetVehicle(regNo);
+
+            return entries.Select(e => new VehicleFeeDetails
+            {
+                EntryTime = e.EntryTime,
+                Fee = IsVehicleTollFree(vehicle) || IsTollFreeDate(e.EntryTime)
+                    ? 0
+                    : GetFeeForTime(e.EntryTime)
+            }).ToList();
+        }
+       
         //################################################
 
         /**
