@@ -25,14 +25,24 @@ namespace TollCalculator.Services
         /// <returns>A list of vehicles with total toll fee and details</returns>
         public List<VehicleFee> Calculate(List<TollEntry> tollEntries)
         {
+            var unknowns = GetUnknownVehicles(tollEntries);
+            foreach (var regNo in unknowns)
+                Console.Error.WriteLine($"WARNING: Vehicle {regNo} not found in registry");
+
+            var knownRegNos = tollEntries
+                .Select(e => e.RegNo)
+                .Where(regNo => _vehicleRegistry.GetVehicle(regNo) != null)
+                .Distinct();
+
             var result = tollEntries.GroupBy(e => e.RegNo).Select(v =>
                 new VehicleFee
                 {
                     RegNo = v.Key,
+                    IsUnknown = _vehicleRegistry.GetVehicle(v.Key) == null,
                     TotalFee = GetVehicleFee(v.Key, v.ToList()),
                     Details = GetDetails(v.Key, v.OrderBy(e => e.EntryTime).ToList())
                 }
-             ).ToList();
+            ).ToList();
 
             return result;
         }
@@ -60,10 +70,7 @@ namespace TollCalculator.Services
             var vehicle = _vehicleRegistry.GetVehicle(regNo);
             decimal totalFee = 0;
 
-            if (vehicle == null)
-                return 0;
-
-            if (IsVehicleTollFree(vehicle))
+            if (vehicle != null && IsVehicleTollFree(vehicle))
                 return 0;
 
             var chargeableEntries = entries
@@ -123,17 +130,10 @@ namespace TollCalculator.Services
         {
             var vehicle = _vehicleRegistry.GetVehicle(regNo);
 
-            if (vehicle == null)
-                return entries.Select(e => new VehicleFeeDetails
-                {
-                    EntryTime = e.EntryTime,
-                    Fee = 0
-                }).ToList();
-
             return entries.Select(e => new VehicleFeeDetails
             {
                 EntryTime = e.EntryTime,
-                Fee = IsVehicleTollFree(vehicle) || IsTollFreeDate(e.EntryTime)
+                Fee = (vehicle != null && IsVehicleTollFree(vehicle)) || IsTollFreeDate(e.EntryTime)
                     ? 0
                     : GetFeeForTime(e.EntryTime)
             }).ToList();
