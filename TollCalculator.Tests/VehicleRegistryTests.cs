@@ -17,5 +17,14 @@ namespace TollCalculator.Tests
                 })
             );
         }
+
+        [Fact]
+        public void VehicleRegistry_NullInput_ThrowsArgumentNullException()
+        {
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() =>
+                new VehicleRegistry(null)
+            );
+        }
     }
 }
