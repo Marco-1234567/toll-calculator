@@ -167,5 +167,23 @@ namespace TollCalculator.Tests
             // Assert
             Assert.Equal(0, results.First().TotalFee);
         }
+
+        [Fact]
+        public void GetUnknownVehicles_UnregisteredVehicle_ReturnsRegNo()
+        {
+            // Arrange
+            var entries = new List<TollEntry>
+            {
+                new TollEntry("UNKNOWN", new DateTime(2026, 6, 8, 7, 0, 0)),
+                new TollEntry("CAR123", new DateTime(2026, 6, 8, 8, 0, 0))  // known
+            };
+
+            // Act
+            var unknowns = _calculator.GetUnknownVehicles(entries);
+
+            // Assert
+            Assert.Single(unknowns);
+            Assert.Contains("UNKNOWN", unknowns);
+        }
     }
 }

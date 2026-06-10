@@ -128,5 +128,10 @@ namespace TollCalculator.Services
                     : GetFeeForTime(e.EntryTime)
             }).ToList();
         }
+
+        public List<string> GetUnknownVehicles(List<TollEntry> entries)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
