@@ -8,7 +8,13 @@ namespace TollCalculator.Services
 
         public VehicleRegistry(IEnumerable<Vehicle> vehicles)
         {
-            _vehicles = vehicles.ToDictionary(v => v.RegNo);
+            _vehicles = new Dictionary<string, Vehicle>();
+            foreach (var vehicle in vehicles)
+            {
+                if (_vehicles.ContainsKey(vehicle.RegNo))
+                    throw new ArgumentException($"Duplicate RegNo: {vehicle.RegNo}");
+                _vehicles[vehicle.RegNo] = vehicle;
+            }
         }
 
         public Vehicle? GetVehicle(string regNo)
