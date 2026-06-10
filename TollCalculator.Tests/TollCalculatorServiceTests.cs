@@ -212,5 +212,39 @@ namespace TollCalculator.Tests
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => _calculator.Calculate(null));
         }
+
+        [Theory]
+        [InlineData(6, 29, 8)]   // last minute of 8 SEK period
+        [InlineData(6, 30, 13)]  // first minute of 13 SEK period
+        [InlineData(6, 59, 13)]  // last minute of 13 SEK period
+        [InlineData(7, 0, 18)]   // first minute of rush hour
+        [InlineData(7, 59, 18)]  // last minute of rush hour
+        [InlineData(8, 0, 13)]   // first minute after rush hour
+        [InlineData(8, 29, 13)]  // last minute of 13 SEK period
+        [InlineData(8, 30, 8)]   // first minute of long 8 SEK period
+        [InlineData(14, 59, 8)]  // last minute of long 8 SEK period
+        [InlineData(15, 0, 13)]  // first minute of afternoon
+        [InlineData(15, 29, 13)] // last minute of 13 SEK period
+        [InlineData(15, 30, 18)] // first minute of afternoon rush hour
+        [InlineData(16, 59, 18)] // last minute of afternoon rush hour
+        [InlineData(17, 0, 13)]  // first minute after afternoon rush
+        [InlineData(17, 59, 13)] // last minute of 13 SEK period
+        [InlineData(18, 0, 8)]   // first minute of last period
+        [InlineData(18, 29, 8)]  // last minute of last period
+        [InlineData(18, 30, 0)]  // first minute of free period
+        public void Calculate_EntryAtFeeBoundary_ReturnsCorrectFee(int hour, int minute, int expectedFee)
+        {
+            // Arrange
+            var entries = new List<TollEntry>
+    {
+        new TollEntry("CAR123", new DateTime(2026, 6, 8, hour, minute, 0))
+    };
+
+            // Act
+            var results = _calculator.Calculate(entries);
+
+            // Assert
+            Assert.Equal(expectedFee, results.First().TotalFee);
+        }
     }
 }
