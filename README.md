@@ -6,9 +6,7 @@ Swedish congestion tax rules.
 ## Features
 
 - Calculate toll fees per vehicle based on time of day
-
 - Handles Swedish public holidays and weekends (toll free)
-
 - Sliding 60 minute window — only most expensive fee per hour charged
 - Daily maximum limit of 60 SEK per vehicle
 - Fee free vehicles (Bus)
@@ -45,6 +43,10 @@ Swedish congestion tax rules.
   where toll sensors only register a license plate
 - Unknown vehicles are charged full toll fee, and a warning is written to Console.Error. The caller can separately invoke GetUnknownVehicles() to retrieve a list of unregistered vehicles for further investigation.
 
+- Holiday calculation methods (GetEaster, GetMidsummerEve, GetAllSaints) are 
+  marked internal to hide implementation details from external consumers, 
+  while remaining accessible to the test project via InternalsVisibleTo.
+
 ## Fee Schedule
 
 | Time | Fee |
@@ -62,16 +64,15 @@ Swedish congestion tax rules.
 
 ## Known Limitations
 
-- Fees in details show original fee (not 0 SEK as in calculations of the total fee).
+- Individual entry fees in VehicleFeeDetails reflect the raw time-based fee 
+  and do not account for the sliding window absorption. TotalFee is always correct.
 
 - No persistent storage — data lives in memory only
 
 ## Test Coverage
 
 - Grouping entries by registration number
-
 - Sorting entries by timestamp
-
 - Empty list input
 - Toll free vehicles
 - Weekend exemption
@@ -80,3 +81,8 @@ Swedish congestion tax rules.
 - Sliding 60 minute window hourly max fee
 - Swedish public holidays
 - Fee stored in VehicleFeeDetails
+- Fee schedule boundary transitions
+- Entries spanning multiple days
+- Unregistered vehicle handling
+- Null input guard
+- Duplicate registration number in registry
