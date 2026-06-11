@@ -14,6 +14,19 @@ namespace TollCalculator.Services
         private readonly VehicleRegistry _vehicleRegistry;
         private readonly SwedishHolidayService _swedishHolidayService;
 
+        private static readonly (TimeSpan From, TimeSpan To, decimal Fee)[] FeeSchedule =
+        {
+            (new TimeSpan(6, 0, 0),  new TimeSpan(6, 29, 0),  MinFee),
+            (new TimeSpan(6, 30, 0), new TimeSpan(6, 59, 0),  13),
+            (new TimeSpan(7, 0, 0),  new TimeSpan(7, 59, 0),  MaxFee),
+            (new TimeSpan(8, 0, 0),  new TimeSpan(8, 29, 0),  13),
+            (new TimeSpan(8, 30, 0), new TimeSpan(14, 59, 0), MinFee),
+            (new TimeSpan(15, 0, 0), new TimeSpan(15, 29, 0), 13),
+            (new TimeSpan(15, 30, 0),new TimeSpan(16, 59, 0), MaxFee),
+            (new TimeSpan(17, 0, 0), new TimeSpan(17, 59, 0), 13),
+            (new TimeSpan(18, 0, 0), new TimeSpan(18, 29, 0), MinFee),
+        };
+
         /// <summary>
         /// Initializes the toll calculator with required dependencies.
         /// </summary>
@@ -65,6 +78,20 @@ namespace TollCalculator.Services
         }
 
         /// <summary>
+        /// Returns a list of registration numbers not found in the vehicle registry.
+        /// </summary>
+        /// <param name="tollEntries">List of toll entries to check</param>
+        /// <returns>List of unknown registration numbers</returns>
+        public List<string> GetUnknownVehicles(List<TollEntry> tollEntries)
+        {
+            return tollEntries
+                .Select(e => e.RegNo)
+                .Distinct()
+                .Where(regNo => _vehicleRegistry.GetVehicle(regNo) == null)
+                .ToList();
+        }
+
+        /// <summary>
         /// Returns the toll fee schedule as a read only list.
         /// </summary>
         /// <returns>Read only list of fee intervals with from, to and fee</returns>
@@ -72,19 +99,6 @@ namespace TollCalculator.Services
         {
             return FeeSchedule;
         }
-
-        private static readonly (TimeSpan From, TimeSpan To, decimal Fee)[] FeeSchedule =
-        {
-            (new TimeSpan(6, 0, 0),  new TimeSpan(6, 29, 0),  MinFee),
-            (new TimeSpan(6, 30, 0), new TimeSpan(6, 59, 0),  13),
-            (new TimeSpan(7, 0, 0),  new TimeSpan(7, 59, 0),  MaxFee),
-            (new TimeSpan(8, 0, 0),  new TimeSpan(8, 29, 0),  13),
-            (new TimeSpan(8, 30, 0), new TimeSpan(14, 59, 0), MinFee),
-            (new TimeSpan(15, 0, 0), new TimeSpan(15, 29, 0), 13),
-            (new TimeSpan(15, 30, 0),new TimeSpan(16, 59, 0), MaxFee),
-            (new TimeSpan(17, 0, 0), new TimeSpan(17, 59, 0), 13),
-            (new TimeSpan(18, 0, 0), new TimeSpan(18, 29, 0), MinFee),
-        };
 
         private decimal GetVehicleFee(string regNo, List<TollEntry> entries)
         {
@@ -161,20 +175,6 @@ namespace TollCalculator.Services
                     ? 0
                     : GetFeeForTime(e.EntryTime)
             }).ToList();
-        }
-
-        /// <summary>
-        /// Returns a list of registration numbers not found in the vehicle registry.
-        /// </summary>
-        /// <param name="tollEntries">List of toll entries to check</param>
-        /// <returns>List of unknown registration numbers</returns>
-        public List<string> GetUnknownVehicles(List<TollEntry> tollEntries)
-        {
-            return tollEntries
-                .Select(e => e.RegNo)
-                .Distinct()
-                .Where(regNo => _vehicleRegistry.GetVehicle(regNo) == null)
-                .ToList();
         }
     }
 }

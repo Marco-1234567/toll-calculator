@@ -17,30 +17,6 @@
             return holidays.Contains(date.Date);
         }
 
-        private HashSet<DateTime> GetHolidays(int year)
-        {
-            var easter = GetEaster(year);
-
-            return new HashSet<DateTime>
-            {
-                new DateTime(year, 1, 1),           // Nyårsdagen
-                new DateTime(year, 1, 6),           // Trettondedag jul
-                new DateTime(year, 5, 1),           // Första maj
-                new DateTime(year, 6, 6),           // Nationaldagen
-                new DateTime(year, 12, 25),         // Juldagen
-                new DateTime(year, 12, 26),         // Annandag jul
-                new DateTime(year, 12, 31),         // Nyårsafton
-                GetMidsummerEve(year),              // Midsommarafton
-                GetMidsummerEve(year).AddDays(1),   // Midsommardagen
-                GetAllSaints(year),                 // Alla helgons dag
-                easter.AddDays(-2),                 // Långfredag
-                easter,                             // Påskdagen
-                easter.AddDays(1),                  // Annandag påsk
-                easter.AddDays(39),                 // Kristi himmelsfärd
-                easter.AddDays(49),                 // Pingstdagen
-            };
-        }
-
         /// <summary>
         /// Determines whether the given date falls on a weekend.
         /// </summary>
@@ -87,6 +63,30 @@
             int month = (h + l - 7 * m + 114) / 31;
             int day = ((h + l - 7 * m + 114) % 31) + 1;
             return new DateTime(year, month, day);
+        }
+
+        private HashSet<DateTime> GetHolidays(int year)
+        {
+            var easter = GetEaster(year);
+
+            return new HashSet<DateTime>
+            {
+                new DateTime(year, 1, 1),           // Nyårsdagen
+                new DateTime(year, 1, 6),           // Trettondedag jul
+                new DateTime(year, 5, 1),           // Första maj
+                new DateTime(year, 6, 6),           // Nationaldagen
+                new DateTime(year, 12, 25),         // Juldagen
+                new DateTime(year, 12, 26),         // Annandag jul
+                new DateTime(year, 12, 31),         // Nyårsafton
+                GetMidsummerEve(year),              // Midsommarafton
+                GetMidsummerEve(year).AddDays(1),   // Midsommardagen
+                GetAllSaints(year),                 // Alla helgons dag
+                easter.AddDays(-2),                 // Långfredag
+                easter,                             // Påskdagen
+                easter.AddDays(1),                  // Annandag påsk
+                easter.AddDays(39),                 // Kristi himmelsfärd
+                easter.AddDays(49),                 // Pingstdagen
+            };
         }
     }
 }
