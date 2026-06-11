@@ -144,7 +144,7 @@ namespace TollCalculator.Services
 
         private bool IsVehicleTollFree(Vehicle vehicle)
         {
-            return vehicle is Buss;
+            return vehicle is Bus;
         }
 
         private decimal GetFeeForTime(DateTime date)

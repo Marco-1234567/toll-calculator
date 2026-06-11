@@ -28,7 +28,13 @@
                 || date.DayOfWeek == DayOfWeek.Sunday;
         }
 
-        public DateTime GetMidsummerEve(int year)
+        /// <summary>
+        /// Calculates the date of Midsummer Eve for the given year.
+        /// Midsummer Eve falls on the first Friday on or after June 19.
+        /// </summary>
+        /// <param name="year">The year to calculate for</param>
+        /// <returns>Date of Midsummer Eve</returns>
+        internal DateTime GetMidsummerEve(int year)
         {
             // First Friday on or after June 19
             var date = new DateTime(year, 6, 19);
@@ -37,7 +43,13 @@
             return date;
         }
 
-        public DateTime GetAllSaints(int year)
+        /// <summary>
+        /// Calculates the date of All Saints Day for the given year.
+        /// All Saints Day falls on the first Saturday on or after October 31.
+        /// </summary>
+        /// <param name="year">The year to calculate for</param>
+        /// <returns>Date of All Saints Day</returns>
+        internal DateTime GetAllSaints(int year)
         {
             // First Saturday on or after October 31
             var date = new DateTime(year, 10, 31);
@@ -46,7 +58,13 @@
             return date;
         }
 
-        public DateTime GetEaster(int year)
+        /// <summary>
+        /// Calculates the date of Easter Sunday for the given year
+        /// using the Anonymous Gregorian algorithm.
+        /// </summary>
+        /// <param name="year">The year to calculate for</param>
+        /// <returns>Date of Easter Sunday</returns>
+        internal DateTime GetEaster(int year)
         {
             int a = year % 19;
             int b = year / 100;

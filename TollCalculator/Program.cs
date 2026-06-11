@@ -4,7 +4,7 @@ using TollCalculator.Services;
 var registry = new VehicleRegistry(new List<Vehicle>
 {
     new Car("CAR123"),
-    new Buss("BUS888")
+    new Bus("BUS888")
 });
 
 var holidayService = new SwedishHolidayService();

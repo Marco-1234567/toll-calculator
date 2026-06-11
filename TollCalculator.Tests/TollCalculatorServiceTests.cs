@@ -14,7 +14,7 @@ namespace TollCalculator.Tests
             _registry = new VehicleRegistry(new List<Vehicle>
             {
                 new Car("CAR123"),
-                new Buss("BUS888"),
+                new Bus("BUS888"),
                 new Car("AAA111"),
                 new Car("BBB222")
             });
