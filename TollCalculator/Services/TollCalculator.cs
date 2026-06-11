@@ -59,11 +59,6 @@ namespace TollCalculator.Services
             foreach (var regNo in unknowns)
                 Console.Error.WriteLine($"WARNING: Vehicle {regNo} not found in registry");
 
-            var knownRegNos = tollEntries
-                .Select(e => e.RegNo)
-                .Where(regNo => _vehicleRegistry.GetVehicle(regNo) != null)
-                .Distinct();
-
             var result = tollEntries.GroupBy(e => e.RegNo).Select(v =>
                 new VehicleFee
                 {
