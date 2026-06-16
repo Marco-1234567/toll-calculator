@@ -29,6 +29,7 @@ static void RunDemo(TollCalculatorService calculator)
     {
         new TollEntry("CAR123", new DateTime(2026, 6, 8, 7, 0, 0)),   // 18 SEK
         new TollEntry("CAR123", new DateTime(2026, 6, 8, 7, 30, 0)),  // absorbed
+        new TollEntry("CAR123", new DateTime(2026, 6, 9, 11, 30, 0)), // 8 
         new TollEntry("BUS888", new DateTime(2026, 6, 8, 7, 0, 0))    // toll free
     };
 
@@ -40,7 +41,7 @@ static void RunDemo(TollCalculatorService calculator)
         Console.WriteLine($"\n{result.RegNo}: {result.TotalFee} SEK total");
         foreach (var detail in result.Details)
         {
-            Console.WriteLine($"  {detail.EntryTime:HH:mm}   {detail.Fee,2} SEK");
+            Console.WriteLine($"  {detail.EntryTime:yy-MM-dd HH:mm}   {detail.Fee,2} SEK");
         }
     }
 }

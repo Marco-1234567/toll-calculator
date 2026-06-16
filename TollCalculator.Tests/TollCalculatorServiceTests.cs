@@ -236,9 +236,9 @@ namespace TollCalculator.Tests
         {
             // Arrange
             var entries = new List<TollEntry>
-    {
-        new TollEntry("CAR123", new DateTime(2026, 6, 8, hour, minute, 0))
-    };
+            {
+                new TollEntry("CAR123", new DateTime(2026, 6, 8, hour, minute, 0))
+            };
 
             // Act
             var results = _calculator.Calculate(entries);
@@ -252,18 +252,18 @@ namespace TollCalculator.Tests
         {
             // Arrange
             var entries = new List<TollEntry>
-    {
-        // Monday — many rush hour entries
-        new TollEntry("CAR123", new DateTime(2026, 6, 8, 7, 0, 0)),   // 18 SEK
-        new TollEntry("CAR123", new DateTime(2026, 6, 8, 15, 30, 0)), // 18 SEK
-        new TollEntry("CAR123", new DateTime(2026, 6, 8, 16, 0, 0)),  // 18 SEK
-        new TollEntry("CAR123", new DateTime(2026, 6, 8, 17, 0, 0)),  // 13 SEK
-        // Tuesday
-        new TollEntry("CAR123", new DateTime(2026, 6, 9, 7, 0, 0)),   // 18 SEK
-        new TollEntry("CAR123", new DateTime(2026, 6, 9, 15, 30, 0)), // 18 SEK
-        new TollEntry("CAR123", new DateTime(2026, 6, 9, 16, 0, 0)),  // 18 SEK
-        new TollEntry("CAR123", new DateTime(2026, 6, 9, 17, 0, 0)),  // 13 SEK
-    };
+            {
+                // Monday — many rush hour entries
+                new TollEntry("CAR123", new DateTime(2026, 6, 8, 7, 0, 0)),   // 18 SEK
+                new TollEntry("CAR123", new DateTime(2026, 6, 8, 15, 30, 0)), // 18 SEK
+                new TollEntry("CAR123", new DateTime(2026, 6, 8, 16, 0, 0)),  // 18 SEK
+                new TollEntry("CAR123", new DateTime(2026, 6, 8, 17, 0, 0)),  // 13 SEK
+                // Tuesday
+                new TollEntry("CAR123", new DateTime(2026, 6, 9, 7, 0, 0)),   // 18 SEK
+                new TollEntry("CAR123", new DateTime(2026, 6, 9, 15, 30, 0)), // 18 SEK
+                new TollEntry("CAR123", new DateTime(2026, 6, 9, 16, 0, 0)),  // 18 SEK
+                new TollEntry("CAR123", new DateTime(2026, 6, 9, 17, 0, 0)),  // 13 SEK
+            };
             // Monday: 18 + 18 + 13 = 49 SEK
             // Tuesday: 18 + 18 + 13 = 49 SEK
             // Total = 98 SEK (under daily cap both days)
@@ -273,6 +273,42 @@ namespace TollCalculator.Tests
 
             // Assert
             Assert.Equal(98, results.First().TotalFee);
+        }
+
+        [Theory]
+        [InlineData(5, 59, 59, 0)]
+        [InlineData(6, 00, 00, 8)]
+        [InlineData(6, 29, 59, 8)]
+        [InlineData(6, 30, 00, 13)]
+        [InlineData(6, 59, 59, 13)]
+        [InlineData(7, 00, 00, 18)]
+        [InlineData(7, 59, 59, 18)]
+        [InlineData(8, 00, 00, 13)]
+        [InlineData(8, 29, 59, 13)]
+        [InlineData(8, 30, 00, 8)]
+        [InlineData(14, 59, 59, 8)]
+        [InlineData(15, 00, 00, 13)]
+        [InlineData(15, 29, 59, 13)]
+        [InlineData(15, 30, 00, 18)]
+        [InlineData(16, 59, 59, 18)]
+        [InlineData(17, 00, 00, 13)]
+        [InlineData(17, 59, 59, 13)]
+        [InlineData(18, 00, 00, 8)]
+        [InlineData(18, 29, 59, 8)]
+        [InlineData(18, 30, 00, 0)]
+        public void Calculate_EntryAtFeeBoundarySeconds_ReturnCorrectFee(int hour, int minute, int second, int expectedFee)
+        {
+            // Arrange
+            List<TollEntry> entries = new List<TollEntry>
+                {
+                    new TollEntry("CAR123", new DateTime(2026, 6, 8, hour, minute, second))
+                };
+
+            // Act
+            var results = _calculator.Calculate(entries);
+
+            // Assert
+            Assert.Equal(expectedFee, results.First().TotalFee);
         }
     }
 }
