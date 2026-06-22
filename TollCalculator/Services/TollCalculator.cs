@@ -60,14 +60,18 @@ namespace TollCalculator.Services
                 Console.Error.WriteLine($"WARNING: Vehicle {regNo} not found in registry");
 
             var result = tollEntries.GroupBy(e => e.RegNo).Select(v =>
-                new VehicleFee
+            {
+                var vehicle = _vehicleRegistry.GetVehicle(v.Key);
+                var entries = v.OrderBy(e => e.EntryTime).ToList();
+
+                return new VehicleFee
                 {
                     RegNo = v.Key,
-                    IsUnknown = _vehicleRegistry.GetVehicle(v.Key) == null,
-                    TotalFee = GetVehicleFee(v.Key, v.ToList()),
-                    Details = GetDetails(v.Key, v.OrderBy(e => e.EntryTime).ToList())
-                }
-            ).ToList();
+                    IsUnknown = vehicle == null,
+                    TotalFee = GetVehicleFee(vehicle, entries),
+                    Details = GetDetails(vehicle, entries)
+                };
+            }).ToList();
 
             return result;
         }
@@ -95,10 +99,8 @@ namespace TollCalculator.Services
             return FeeSchedule;
         }
 
-        private decimal GetVehicleFee(string regNo, List<TollEntry> entries)
+        private decimal GetVehicleFee(Vehicle? vehicle, List<TollEntry> entries)
         {
-            var vehicle = _vehicleRegistry.GetVehicle(regNo);
-
             if (vehicle != null && IsVehicleTollFree(vehicle))
                 return 0;
 
@@ -159,10 +161,8 @@ namespace TollCalculator.Services
                 || _swedishHolidayService.IsPublicHoliday(date);
         }
 
-        private List<VehicleFeeDetails> GetDetails(string regNo, List<TollEntry> entries)
+        private List<VehicleFeeDetails> GetDetails(Vehicle? vehicle, List<TollEntry> entries)
         {
-            var vehicle = _vehicleRegistry.GetVehicle(regNo);
-
             return entries.Select(e => new VehicleFeeDetails
             {
                 EntryTime = e.EntryTime,
